@@ -1,0 +1,2764 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edu-Kingdom 교육플랫폼 — 인터랙티브 와이어프레임</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ==============================
+   DESIGN TOKENS
+   ============================== */
+:root {
+  --gold: #C9A84C;
+  --gold-light: #E8D5A0;
+  --gold-dark: #A88B3A;
+  --teal: #1A3C34;
+  --teal-light: #2A5C4E;
+  --cream: #F5F0E1;
+  --cream-dark: #EDE5D0;
+  --parchment: #FAF6EC;
+  --brown: #5C4A32;
+  --brown-light: #8B7355;
+  --text: #2C2C2C;
+  --text-light: #6B6B6B;
+  --border: #D4CDB8;
+  --success: #2E7D32;
+  --info: #1565C0;
+  --warning: #F57C00;
+  --danger: #C62828;
+  --shadow: 0 2px 12px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-lg: 16px;
+  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --font-body: 'Noto Sans KR', sans-serif;
+  --font-display: 'Playfair Display', serif;
+}
+
+/* ==============================
+   RESET & BASE
+   ============================== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-body);
+  background: #E8E0D0;
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ==============================
+   WIREFRAME SHELL
+   ============================== */
+.wf-shell {
+  max-width: 1440px;
+  margin: 0 auto;
+  background: var(--parchment);
+  min-height: 100vh;
+  box-shadow: var(--shadow-lg);
+  position: relative;
+}
+
+/* ==============================
+   SIDEBAR NAVIGATION
+   ============================== */
+.wf-sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 280px;
+  height: 100vh;
+  background: var(--teal);
+  color: white;
+  z-index: 1000;
+  overflow-y: auto;
+  transform: translateX(-100%);
+  transition: var(--transition);
+  box-shadow: var(--shadow-lg);
+}
+
+.wf-sidebar.open { transform: translateX(0); }
+
+.wf-sidebar-header {
+  padding: 24px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.wf-sidebar-title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.wf-sidebar-close {
+  background: none; border: none; color: white;
+  font-size: 20px; cursor: pointer; padding: 4px 8px;
+  border-radius: 4px;
+}
+.wf-sidebar-close:hover { background: rgba(255,255,255,0.1); }
+
+.wf-sidebar-section {
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.wf-sidebar-section-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--gold-light);
+  padding: 0 24px 8px;
+  font-weight: 600;
+}
+
+.wf-sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 24px;
+  color: rgba(255,255,255,0.75);
+  font-size: 14px;
+  cursor: pointer;
+  transition: var(--transition);
+  border-left: 3px solid transparent;
+}
+
+.wf-sidebar-item:hover {
+  background: rgba(255,255,255,0.05);
+  color: white;
+}
+
+.wf-sidebar-item.active {
+  background: rgba(255,255,255,0.08);
+  color: var(--gold-light);
+  border-left-color: var(--gold);
+  font-weight: 500;
+}
+
+.wf-sidebar-item .wf-id {
+  font-size: 10px;
+  background: rgba(255,255,255,0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: monospace;
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.wf-sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 999;
+  display: none;
+}
+.wf-sidebar-overlay.open { display: block; }
+
+/* ==============================
+   TOP BAR
+   ============================== */
+.wf-topbar {
+  background: var(--teal);
+  color: white;
+  padding: 0 32px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.wf-topbar-menu {
+  background: none; border: none; color: white;
+  font-size: 22px; cursor: pointer; padding: 4px;
+  display: flex; align-items: center;
+}
+
+.wf-topbar-logo {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wf-topbar-logo .shield {
+  width: 28px; height: 28px;
+  background: var(--gold);
+  border-radius: 4px 4px 8px 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+}
+
+.wf-topbar-nav {
+  display: flex;
+  gap: 4px;
+  margin-left: 40px;
+}
+
+.wf-topbar-nav a {
+  color: rgba(255,255,255,0.7);
+  text-decoration: none;
+  font-size: 14px;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  transition: var(--transition);
+  font-weight: 400;
+}
+
+.wf-topbar-nav a:hover { color: white; background: rgba(255,255,255,0.08); }
+.wf-topbar-nav a.active { color: var(--gold-light); font-weight: 500; }
+
+.wf-topbar-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.wf-topbar-login {
+  background: transparent;
+  color: white;
+  border: 1px solid rgba(255,255,255,0.3);
+  padding: 6px 20px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.wf-topbar-login:hover { background: rgba(255,255,255,0.1); border-color: white; }
+
+.wf-topbar-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.wf-topbar-avatar {
+  width: 32px; height: 32px;
+  background: var(--gold);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 600;
+  color: var(--teal);
+}
+
+/* ==============================
+   PAGE HEADER
+   ============================== */
+.wf-page-header {
+  padding: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+}
+
+.wf-page-header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--teal);
+}
+
+.wf-page-id {
+  font-size: 11px;
+  font-family: monospace;
+  background: var(--teal);
+  color: var(--gold-light);
+  padding: 4px 12px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+}
+
+.wf-breadcrumb {
+  font-size: 13px;
+  color: var(--text-light);
+  padding: 16px 32px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wf-breadcrumb a { color: var(--gold-dark); text-decoration: none; }
+.wf-breadcrumb a:hover { text-decoration: underline; }
+
+/* ==============================
+   CONTENT AREA
+   ============================== */
+.wf-content { padding: 32px; }
+
+/* ==============================
+   CARDS
+   ============================== */
+.wf-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+}
+
+.wf-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+
+.wf-card-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  font-weight: 600;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wf-card-body { padding: 24px; }
+
+/* ==============================
+   BADGES
+   ============================== */
+.wf-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.wf-badge-recruiting { background: #E8F5E9; color: var(--success); }
+.wf-badge-upcoming { background: #E3F2FD; color: var(--info); }
+.wf-badge-closed { background: #FFEBEE; color: var(--danger); }
+.wf-badge-warning { background: #FFF3E0; color: var(--warning); }
+.wf-badge-completed { background: #F3F3F3; color: #555; }
+
+/* ==============================
+   BUTTONS
+   ============================== */
+.wf-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 28px;
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  border: none;
+  font-family: var(--font-body);
+}
+
+.wf-btn-primary {
+  background: var(--gold);
+  color: var(--teal);
+}
+.wf-btn-primary:hover { background: var(--gold-dark); }
+
+.wf-btn-secondary {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.wf-btn-secondary:hover { border-color: var(--text); }
+
+.wf-btn-outline {
+  background: transparent;
+  color: var(--gold-dark);
+  border: 1px solid var(--gold);
+}
+.wf-btn-outline:hover { background: var(--gold-light); color: var(--teal); }
+
+.wf-btn-sm { padding: 6px 16px; font-size: 13px; }
+
+.wf-btn-lg {
+  padding: 16px 48px;
+  font-size: 17px;
+  border-radius: var(--radius);
+  width: 100%;
+}
+
+.wf-btn-disabled {
+  background: #D0D0D0;
+  color: #999;
+  cursor: not-allowed;
+}
+
+/* ==============================
+   FORM ELEMENTS
+   ============================== */
+.wf-form-group {
+  margin-bottom: 20px;
+}
+
+.wf-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.wf-label .required { color: var(--danger); margin-left: 2px; }
+
+.wf-input, .wf-textarea, .wf-select {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  font-family: var(--font-body);
+  background: white;
+  transition: var(--transition);
+  color: var(--text);
+}
+
+.wf-input:focus, .wf-textarea:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.15);
+}
+
+.wf-input-auto {
+  background: var(--cream);
+  color: var(--text-light);
+}
+
+.wf-textarea { min-height: 100px; resize: vertical; }
+
+.wf-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.wf-checkbox input[type="checkbox"] {
+  width: 18px; height: 18px;
+  accent-color: var(--gold);
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+/* ==============================
+   GRID
+   ============================== */
+.wf-grid { display: grid; gap: 24px; }
+.wf-grid-2 { grid-template-columns: repeat(2, 1fr); }
+.wf-grid-3 { grid-template-columns: repeat(3, 1fr); }
+.wf-grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+/* ==============================
+   TABS
+   ============================== */
+.wf-tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 24px;
+}
+
+.wf-tab {
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-light);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: var(--transition);
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  font-family: var(--font-body);
+}
+
+.wf-tab:hover { color: var(--text); }
+
+.wf-tab.active {
+  color: var(--gold-dark);
+  border-bottom-color: var(--gold);
+  font-weight: 600;
+}
+
+/* ==============================
+   FILTER CHIPS
+   ============================== */
+.wf-chips {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.wf-chip {
+  padding: 8px 18px;
+  border-radius: 24px;
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px solid var(--border);
+  background: white;
+  cursor: pointer;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-body);
+}
+
+.wf-chip:hover { border-color: var(--gold); }
+
+.wf-chip.active {
+  background: var(--teal);
+  color: white;
+  border-color: var(--teal);
+}
+
+/* ==============================
+   STATUS FILTERS
+   ============================== */
+.wf-status-filter {
+  display: flex;
+  gap: 2px;
+  font-size: 13px;
+  margin-bottom: 24px;
+}
+
+.wf-status-filter span {
+  padding: 6px 16px;
+  color: var(--text-light);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.wf-status-filter span:hover { color: var(--text); }
+
+.wf-status-filter span.active {
+  color: var(--teal);
+  font-weight: 600;
+}
+
+.wf-status-filter span + span::before {
+  content: '|';
+  margin-right: 12px;
+  color: var(--border);
+}
+
+/* ==============================
+   COURSE CARD
+   ============================== */
+.wf-course-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.wf-course-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px);
+}
+
+.wf-course-card-img {
+  width: 100%;
+  height: 180px;
+  background: linear-gradient(135deg, var(--teal-light), var(--teal));
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  color: rgba(255,255,255,0.3);
+}
+
+.wf-course-card-img .wf-badge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
+.wf-course-card-body { padding: 20px; }
+
+.wf-course-card-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: var(--teal);
+}
+
+.wf-course-card-desc {
+  font-size: 13px;
+  color: var(--text-light);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.wf-course-card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--text-light);
+}
+
+/* ==============================
+   HERO SECTION (Course Detail)
+   ============================== */
+.wf-hero {
+  display: flex;
+  min-height: 360px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  margin-bottom: 32px;
+  box-shadow: var(--shadow-lg);
+}
+
+.wf-hero-img {
+  flex: 0 0 58%;
+  background: linear-gradient(135deg, var(--teal), #2A5C4E);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 64px;
+  color: rgba(255,255,255,0.2);
+  position: relative;
+}
+
+.wf-hero-img::after {
+  content: '장소 배경 일러스트';
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.4);
+  background: rgba(0,0,0,0.2);
+  padding: 4px 12px;
+  border-radius: 4px;
+}
+
+.wf-hero-content {
+  flex: 1;
+  background: var(--teal);
+  color: white;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.wf-hero-label {
+  font-size: 12px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold-light);
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.wf-hero-title {
+  font-family: var(--font-display);
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  line-height: 1.2;
+}
+
+.wf-hero-desc {
+  font-size: 14px;
+  color: rgba(255,255,255,0.8);
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+
+/* ==============================
+   INFO GRID
+   ============================== */
+.wf-info-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-bottom: 32px;
+}
+
+.wf-info-item {
+  background: white;
+  padding: 20px 24px;
+}
+
+.wf-info-item dt {
+  font-size: 12px;
+  color: var(--text-light);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.wf-info-item dd {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--teal);
+}
+
+/* ==============================
+   CURRICULUM
+   ============================== */
+.wf-curriculum-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  text-align: center;
+  transition: var(--transition);
+}
+
+.wf-curriculum-card:hover {
+  border-color: var(--gold);
+  box-shadow: var(--shadow);
+}
+
+.wf-curriculum-num {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gold-dark);
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+.wf-curriculum-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--teal);
+  margin-bottom: 10px;
+}
+
+.wf-curriculum-desc {
+  font-size: 13px;
+  color: var(--text-light);
+  line-height: 1.6;
+}
+
+/* ==============================
+   SUMMARY CARD
+   ============================== */
+.wf-summary {
+  background: var(--teal);
+  color: white;
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  margin-bottom: 32px;
+}
+
+.wf-summary-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wf-progress-bar {
+  height: 8px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 8px 0 16px;
+}
+
+.wf-progress-fill {
+  height: 100%;
+  background: var(--gold);
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.wf-summary-stats {
+  display: flex;
+  gap: 32px;
+  font-size: 14px;
+  color: rgba(255,255,255,0.8);
+}
+
+.wf-summary-stats strong { color: white; }
+
+.wf-summary-link {
+  color: var(--gold-light);
+  text-decoration: none;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 12px;
+}
+
+/* ==============================
+   ENROLLMENT CARD
+   ============================== */
+.wf-enroll-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  transition: var(--transition);
+}
+
+.wf-enroll-card:hover {
+  box-shadow: var(--shadow);
+}
+
+.wf-enroll-info h4 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wf-enroll-meta {
+  font-size: 13px;
+  color: var(--text-light);
+  margin-top: 6px;
+}
+
+.wf-enroll-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* ==============================
+   ADMIN TABLE
+   ============================== */
+.wf-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.wf-table th {
+  background: var(--cream);
+  padding: 14px 16px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-light);
+  border-bottom: 1px solid var(--border);
+}
+
+.wf-table td {
+  padding: 14px 16px;
+  font-size: 14px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.wf-table tr:last-child td { border-bottom: none; }
+
+.wf-table tr:hover td { background: var(--cream); }
+
+/* ==============================
+   SECTION
+   ============================== */
+.wf-section {
+  margin-bottom: 40px;
+}
+
+.wf-section-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--teal);
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--gold);
+  display: inline-block;
+}
+
+.wf-section-subtitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--brown);
+  margin-bottom: 12px;
+}
+
+/* ==============================
+   CONSENT BOX
+   ============================== */
+.wf-consent {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  background: var(--cream);
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
+
+/* ==============================
+   COURSE SUMMARY BOX
+   ============================== */
+.wf-course-summary {
+  background: var(--cream);
+  border: 2px solid var(--gold-light);
+  border-radius: var(--radius);
+  padding: 24px;
+  margin-bottom: 28px;
+}
+
+.wf-course-summary h3 {
+  font-size: 14px;
+  color: var(--text-light);
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.wf-course-summary-course {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--teal);
+  margin-bottom: 12px;
+}
+
+.wf-course-summary-meta {
+  display: flex;
+  gap: 24px;
+  font-size: 14px;
+  color: var(--text-light);
+}
+
+/* ==============================
+   CTA SECTION
+   ============================== */
+.wf-cta-section {
+  padding: 32px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  background: var(--cream);
+}
+
+.wf-btn-row {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+}
+
+/* ==============================
+   SUCCESS PAGE
+   ============================== */
+.wf-success {
+  text-align: center;
+  padding: 60px 32px;
+}
+
+.wf-success-icon {
+  width: 80px;
+  height: 80px;
+  background: #E8F5E9;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  margin: 0 auto 24px;
+}
+
+.wf-success h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--teal);
+  margin-bottom: 8px;
+}
+
+.wf-success-sub {
+  font-size: 14px;
+  color: var(--text-light);
+  margin-bottom: 32px;
+}
+
+/* ==============================
+   LOGIN
+   ============================== */
+.wf-login-container {
+  max-width: 440px;
+  margin: 60px auto;
+}
+
+.wf-login-box {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  box-shadow: var(--shadow-lg);
+}
+
+.wf-login-title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--teal);
+  margin-bottom: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.wf-divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 24px 0;
+  font-size: 13px;
+  color: var(--text-light);
+}
+
+.wf-divider::before, .wf-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.wf-social-btn {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: var(--font-body);
+  transition: var(--transition);
+  background: white;
+}
+
+.wf-social-btn:hover { background: var(--cream); }
+
+.wf-social-kakao { background: #FEE500; border-color: #FEE500; color: #3C1E1E; }
+.wf-social-kakao:hover { background: #F5DC00; }
+.wf-social-naver { background: #03C75A; border-color: #03C75A; color: white; }
+.wf-social-naver:hover { background: #02B350; }
+
+/* ==============================
+   ANNOTATION / WIREFRAME NOTE
+   ============================== */
+.wf-note {
+  background: #FFF8E1;
+  border: 1px dashed var(--gold);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  font-size: 12px;
+  color: var(--brown);
+  margin: 16px 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.wf-note::before {
+  content: '📌';
+  flex-shrink: 0;
+}
+
+.wf-dd {
+  background: #FFF3E0;
+  border: 1px dashed var(--warning);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  font-size: 11px;
+  color: var(--warning);
+  font-weight: 600;
+  display: inline-block;
+  margin: 4px 0;
+}
+
+/* ==============================
+   FOOTER
+   ============================== */
+.wf-footer {
+  background: var(--teal);
+  color: rgba(255,255,255,0.6);
+  padding: 32px;
+  font-size: 13px;
+  text-align: center;
+  line-height: 1.8;
+}
+
+.wf-footer a { color: var(--gold-light); text-decoration: none; }
+.wf-footer a:hover { text-decoration: underline; }
+
+/* ==============================
+   PAGE VIEWS — hide/show
+   ============================== */
+.wf-page { display: none; }
+.wf-page.active { display: block; }
+
+/* ==============================
+   RESPONSIVE HINTS
+   ============================== */
+@media (max-width: 768px) {
+  .wf-topbar-nav { display: none; }
+  .wf-grid-3, .wf-grid-4 { grid-template-columns: 1fr; }
+  .wf-grid-2 { grid-template-columns: 1fr; }
+  .wf-hero { flex-direction: column; }
+  .wf-hero-img { height: 200px; }
+  .wf-info-grid { grid-template-columns: repeat(2, 1fr); }
+  .wf-content { padding: 20px; }
+  .wf-page-header { padding: 20px; flex-direction: column; align-items: flex-start; gap: 8px; }
+}
+
+/* ==============================
+   ANNOTATION AREA NUMBER
+   ============================== */
+.wf-area-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: var(--gold);
+  color: var(--teal);
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* ==============================
+   REQUIREMENTS LIST
+   ============================== */
+.wf-requirements {
+  list-style: none;
+  padding: 0;
+}
+
+.wf-requirements li {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.wf-requirements li::before {
+  content: '•';
+  color: var(--gold);
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--brown-light); }
+
+/* ==============================
+   NOTICE BOARD (U-NOT-01, U-NOT-02)
+   ============================== */
+.wf-notice-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.wf-notice-table th {
+  background: var(--cream);
+  color: var(--teal);
+  padding: 14px 16px;
+  font-weight: 600;
+  font-size: 14px;
+  text-align: center;
+  border-bottom: 2px solid var(--border);
+}
+
+.wf-notice-table td {
+  padding: 14px 16px;
+  font-size: 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+
+.wf-notice-table tr:hover td {
+  background: #FAF7EF;
+  cursor: pointer;
+}
+
+.wf-pinned-row td {
+  background: #FFFBF0;
+  font-weight: 600;
+}
+
+.wf-pin-tag {
+  background: var(--gold);
+  color: var(--teal);
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.wf-notice-detail-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 36px;
+  box-shadow: var(--shadow);
+}
+
+.wf-notice-detail-header {
+  border-bottom: 2px solid var(--cream-dark);
+  padding-bottom: 20px;
+  margin-bottom: 24px;
+}
+
+.wf-notice-detail-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--teal);
+  margin-bottom: 12px;
+}
+
+.wf-notice-detail-meta {
+  display: flex;
+  gap: 20px;
+  font-size: 13px;
+  color: var(--text-light);
+}
+
+.wf-notice-attach-box {
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 20px;
+  margin: 28px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ==============================
+   MY PAGE ENHANCEMENT (U-MY-01)
+   ============================== */
+.wf-profile-header-card {
+  background: linear-gradient(135deg, var(--teal) 0%, #2A5C4E 100%);
+  color: white;
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: var(--shadow-lg);
+}
+
+.wf-profile-badge-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.wf-profile-badge {
+  background: rgba(201, 168, 76, 0.2);
+  border: 1px solid var(--gold);
+  color: var(--gold-light);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="wf-sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+<nav class="wf-sidebar" id="sidebar">
+  <div class="wf-sidebar-header">
+    <span class="wf-sidebar-title">🗺️ 화면 목록</span>
+    <button class="wf-sidebar-close" onclick="toggleSidebar()">✕</button>
+  </div>
+
+  <div class="wf-sidebar-section">
+    <div class="wf-sidebar-section-title">사용자 화면</div>
+    <div class="wf-sidebar-item active" onclick="showPage('course-list')">
+      📋 교육 과정 목록 <span class="wf-id">EDU-LIST-01</span>
+    </div>
+    <div class="wf-sidebar-item" onclick="showPage('course-detail')">
+      📖 과정 상세 <span class="wf-id">EDU-COURSE-01</span>
+    </div>
+    <div class="wf-sidebar-item" onclick="showPage('apply')">
+      ✏️ 교육 신청 <span class="wf-id">EDU-APPLY-01</span>
+    </div>
+    <div class="wf-sidebar-item" onclick="showPage('apply-done')">
+      ✅ 신청 완료 <span class="wf-id">APPLY-DONE-01</span>
+    </div>
+    <div class="wf-sidebar-item" onclick="showPage('my-education')">
+      🏰 내 교육 및 이력 <span class="wf-id">EDU-MY-01</span>
+    </div>
+    <div class="wf-sidebar-item" onclick="showPage('notice-list')">
+      📢 공지사항 및 안내 <span class="wf-id">EDU-NOT-01</span>
+    </div>
+    <div class="wf-sidebar-item" onclick="showPage('notice-detail')">
+      📄 공지사항 상세 <span class="wf-id">EDU-NOT-02</span>
+    </div>
+    <div class="wf-sidebar-item" onclick="showPage('login')">
+      🔐 로그인 <span class="wf-id">EDU-LOGIN-01</span>
+    </div>
+  </div>
+
+  <div class="wf-sidebar-section">
+    <div class="wf-sidebar-section-title">관리자 화면</div>
+    <div class="wf-sidebar-item" onclick="showPage('admin-dashboard')">
+      📊 운영 대시보드 <span class="wf-id">ADMIN-DASH</span>
+    </div>
+    <div class="wf-sidebar-item" onclick="showPage('admin-course')">
+      ⚙️ 과정 관리 <span class="wf-id">ADMIN-COURSE</span>
+    </div>
+    <div class="wf-sidebar-item" onclick="showPage('admin-applicants')">
+      👥 신청자 관리 <span class="wf-id">ADMIN-APPLY</span>
+    </div>
+    <div class="wf-sidebar-item" onclick="showPage('admin-completion')">
+      🎓 수료 처리 <span class="wf-id">ADMIN-COMPLETE</span>
+    </div>
+    <div class="wf-sidebar-item" onclick="showPage('admin-notice')">
+      📢 공지 관리 <span class="wf-id">ADMIN-NOTICE</span>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN SHELL -->
+<div class="wf-shell">
+
+  <!-- TOP BAR -->
+  <header class="wf-topbar">
+    <button class="wf-topbar-menu" onclick="toggleSidebar()">☰</button>
+    <div class="wf-topbar-logo">
+      <span class="shield">🛡</span>
+      Edu-Kingdom
+    </div>
+    <nav class="wf-topbar-nav">
+      <a href="#" onclick="showPage('course-list')">지도보기</a>
+      <a href="#" class="active" onclick="showPage('course-list')">교육과정</a>
+      <a href="#" onclick="showPage('my-education')">내 교육</a>
+      <a href="#" onclick="showPage('notice-list')">공지사항</a>
+    </nav>
+    <div class="wf-topbar-right">
+      <div class="wf-topbar-user" onclick="showPage('my-education')" style="cursor:pointer;" title="내 교육 바로가기">
+        <div class="wf-topbar-avatar">홍</div>
+        <span>홍길동 님</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       PAGE: COURSE LIST (EDU-LIST-01)
+       ============================================================ -->
+  <div class="wf-page active" id="page-course-list">
+    <div class="wf-page-header">
+      <h1>교육 과정</h1>
+      <span class="wf-page-id">EDU-LIST-01</span>
+    </div>
+    <div class="wf-content">
+
+      <!-- Search -->
+      <div style="display:flex; align-items:center; gap:12px; margin-bottom:24px;">
+        <input type="text" class="wf-input" placeholder="과정명 또는 키워드로 검색..." style="max-width:400px;">
+        <button class="wf-btn wf-btn-secondary wf-btn-sm">🔍 검색</button>
+      </div>
+
+      <!-- Category Chips -->
+      <div class="wf-chips">
+        <button class="wf-chip active">📋 전체</button>
+        <button class="wf-chip">📖 학습</button>
+        <button class="wf-chip">⚔️ 성장</button>
+        <button class="wf-chip">🔄 변화</button>
+        <button class="wf-chip">🔭 비전</button>
+        <button class="wf-chip">⚒️ 훈련</button>
+        <button class="wf-chip">🚩 사명</button>
+        <button class="wf-chip">✝️ 신앙</button>
+      </div>
+
+      <!-- Status Filter -->
+      <div class="wf-status-filter">
+        <span class="active">전체</span>
+        <span>모집 중</span>
+        <span>모집 예정</span>
+        <span>마감</span>
+      </div>
+
+      <!-- Course Grid -->
+      <div class="wf-grid wf-grid-3">
+        <div class="wf-course-card" onclick="showPage('course-detail')">
+          <div class="wf-course-card-img" style="background: linear-gradient(135deg, #4A6741, #2A4A30);">
+            🏰
+            <span class="wf-badge wf-badge-recruiting">🟢 모집 중</span>
+          </div>
+          <div class="wf-course-card-body">
+            <div class="wf-course-card-title">Welcome Gate</div>
+            <div class="wf-course-card-desc">성문의 여정을 시작하는 관문 — 신입회원 필수 과정</div>
+            <div class="wf-course-card-meta">
+              <span>📅 2026.10.15~16</span>
+              <button class="wf-btn wf-btn-outline wf-btn-sm" onclick="event.stopPropagation(); showPage('course-detail')">자세히 보기</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="wf-course-card" onclick="showPage('course-detail')">
+          <div class="wf-course-card-img" style="background: linear-gradient(135deg, #5C4A32, #3A3020);">
+            🪨
+            <span class="wf-badge wf-badge-recruiting">🟢 모집 중</span>
+          </div>
+          <div class="wf-course-card-body">
+            <div class="wf-course-card-title">DeepChange Well</div>
+            <div class="wf-course-card-desc">깊은 변화와 관계 회복을 비추는 우물가</div>
+            <div class="wf-course-card-meta">
+              <span>📅 2026.10.20~22</span>
+              <button class="wf-btn wf-btn-outline wf-btn-sm">자세히 보기</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="wf-course-card">
+          <div class="wf-course-card-img" style="background: linear-gradient(135deg, #6B5B3A, #4A3E28);">
+            🏠
+            <span class="wf-badge wf-badge-upcoming">🔵 모집 예정</span>
+          </div>
+          <div class="wf-course-card-body">
+            <div class="wf-course-card-title">첫걸음</div>
+            <div class="wf-course-card-desc">배움의 첫걸음, 여정의 출발점</div>
+            <div class="wf-course-card-meta">
+              <span>📅 2026.11.05~06</span>
+              <button class="wf-btn wf-btn-outline wf-btn-sm">자세히 보기</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="wf-course-card">
+          <div class="wf-course-card-img" style="background: linear-gradient(135deg, #4A7060, #2A5040);">
+            🐑
+            <span class="wf-badge wf-badge-recruiting">🟢 모집 중</span>
+          </div>
+          <div class="wf-course-card-body">
+            <div class="wf-course-card-title">Timothy Trail</div>
+            <div class="wf-course-card-desc">말씀과 함께 자라는 믿음의 목장</div>
+            <div class="wf-course-card-meta">
+              <span>📅 2026.11.10~12</span>
+              <button class="wf-btn wf-btn-outline wf-btn-sm">자세히 보기</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="wf-course-card">
+          <div class="wf-course-card-img" style="background: linear-gradient(135deg, #2A3A5C, #1A2A4C);">
+            🔭
+            <span class="wf-badge wf-badge-closed">🔴 마감</span>
+          </div>
+          <div class="wf-course-card-body">
+            <div class="wf-course-card-title">비전스쿨</div>
+            <div class="wf-course-card-desc">일터의 부르심과 미래를 바라보는 천문대</div>
+            <div class="wf-course-card-meta">
+              <span>📅 128기 종료</span>
+              <button class="wf-btn wf-btn-outline wf-btn-sm">자세히 보기</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="wf-course-card">
+          <div class="wf-course-card-img" style="background: linear-gradient(135deg, #5C3A2A, #3A2018);">
+            ⚒️
+            <span class="wf-badge wf-badge-upcoming">🔵 모집 예정</span>
+          </div>
+          <div class="wf-course-card-body">
+            <div class="wf-course-card-title">리더십스쿨</div>
+            <div class="wf-course-card-desc">리더의 역량을 단련하는 용광로</div>
+            <div class="wf-course-card-meta">
+              <span>📅 2026.12.01~03</span>
+              <button class="wf-btn wf-btn-outline wf-btn-sm">자세히 보기</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align:center; margin-top:32px;">
+        <a href="#" style="color:var(--gold-dark); font-size:15px; font-weight:600; text-decoration:none;">
+          🗺️ Kingdom Map으로 보기 →
+        </a>
+      </div>
+    </div>
+
+    <footer class="wf-footer">
+      CBMC 교육연수본부 | 문의: edu@cbmc.or.kr | 02-XXX-XXXX<br>
+      <a href="#">개인정보처리방침</a> · <a href="#">이용약관</a>
+    </footer>
+  </div>
+
+  <!-- ============================================================
+       PAGE: COURSE DETAIL (EDU-COURSE-01)
+       ============================================================ -->
+  <div class="wf-page" id="page-course-detail">
+    <div class="wf-breadcrumb">
+      <a href="#" onclick="showPage('course-list')">← 전체 로드맵으로</a>
+      <span style="margin-left:auto; font-weight:600; color:var(--teal);">STOP 02 · DEEPCHANGE WELL</span>
+      <span class="wf-page-id" style="margin-left:16px;">EDU-COURSE-01</span>
+    </div>
+    <div class="wf-content">
+
+      <!-- Hero -->
+      <div class="wf-hero">
+        <div class="wf-hero-img">🪨⛲</div>
+        <div class="wf-hero-content">
+          <div class="wf-hero-label">Draw from the Well</div>
+          <h1 class="wf-hero-title">DeepChange<br>Well</h1>
+          <p class="wf-hero-desc">관계 회복과 내면의 변화를 비추는 우물가입니다. 잠시 멈추어 깊이 바라보고, 함께 나누며, 다음 걸음을 준비합니다.</p>
+          <div>
+            <span class="wf-badge wf-badge-recruiting" style="font-size:14px; padding:6px 16px;">🟢 128기 모집 중!</span>
+          </div>
+          <div class="wf-note" style="margin-top:16px; background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.3); color:rgba(255,255,255,0.8);">
+            비로그인 상태에서도 모든 정보 조회 가능. 신청 버튼 클릭 시 로그인 안내.
+          </div>
+        </div>
+      </div>
+
+      <!-- Section Title -->
+      <div class="wf-section">
+        <h2 style="font-size:26px; text-align:center; margin-bottom:8px; color:var(--teal);">우물가에서 시작하는 변화</h2>
+        <p style="text-align:center; color:var(--text-light); font-size:14px; margin-bottom:32px;">
+          현재는 과정 안내 화면입니다. 신청·소그룹·수료 관리는 완전한 데이터 연동 후 제공됩니다.
+        </p>
+      </div>
+
+      <!-- ③ Info Grid -->
+      <div class="wf-info-grid">
+        <div class="wf-info-item">
+          <dt><span class="wf-area-num">③</span> 일정</dt>
+          <dd>2026.10.20 ~ 22</dd>
+        </div>
+        <div class="wf-info-item">
+          <dt>장소</dt>
+          <dd>서울 ○○센터</dd>
+        </div>
+        <div class="wf-info-item">
+          <dt>대상</dt>
+          <dd>CBMC 정회원</dd>
+        </div>
+        <div class="wf-info-item">
+          <dt>비용</dt>
+          <dd>무료</dd>
+        </div>
+      </div>
+
+      <!-- ④ Purpose -->
+      <div class="wf-section">
+        <h3 class="wf-section-title"><span class="wf-area-num">④</span> 교육 목적 및 기대 결과</h3>
+        <ul class="wf-requirements">
+          <li>자기 성찰과 내면의 변화를 경험</li>
+          <li>관계 회복과 공동체 내 신뢰 구축</li>
+          <li>다음 교육 여정(첫걸음, Timothy Trail)으로의 준비</li>
+        </ul>
+      </div>
+
+      <!-- ⑤ Curriculum -->
+      <div class="wf-section">
+        <h3 class="wf-section-title"><span class="wf-area-num">⑤</span> 교육 내용</h3>
+        <div class="wf-grid wf-grid-3">
+          <div class="wf-curriculum-card">
+            <div class="wf-curriculum-num">01 · PAUSE</div>
+            <div class="wf-curriculum-title">멈추어 바라보기</div>
+            <div class="wf-curriculum-desc">자신의 삶을 돌아보며 내면의 소리에 귀 기울이는 시간</div>
+          </div>
+          <div class="wf-curriculum-card">
+            <div class="wf-curriculum-num">02 · DRAW</div>
+            <div class="wf-curriculum-title">함께 길어 올리기</div>
+            <div class="wf-curriculum-desc">공동체와 함께 나누며 깊은 변화의 물줄기를 길어 올리기</div>
+          </div>
+          <div class="wf-curriculum-card">
+            <div class="wf-curriculum-num">03 · CROSS</div>
+            <div class="wf-curriculum-title">다음 길로 건너기</div>
+            <div class="wf-curriculum-desc">변화를 실천하며 다음 여정을 향해 나아가는 결단</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ⑥ Requirements -->
+      <div class="wf-section">
+        <h3 class="wf-section-title"><span class="wf-area-num">⑥</span> 신청 조건 / 준비사항</h3>
+        <ul class="wf-requirements">
+          <li>신청 자격: CBMC 정회원 (Welcome Gate 수료자 권장)</li>
+          <li>준비물: 성경, 필기구</li>
+          <li>유의사항: 전 일정 참석 필수 (부분 참석 불가)</li>
+          <li>신청 기간: 2026.09.15 ~ 10.15</li>
+        </ul>
+      </div>
+
+      <!-- ⑦ Contact -->
+      <div class="wf-section">
+        <h3 class="wf-section-title"><span class="wf-area-num">⑦</span> 문의처</h3>
+        <p style="font-size:15px; color:var(--text-light);">
+          교육연수본부 ☎ 02-XXX-XXXX / ✉ edu@cbmc.or.kr
+        </p>
+      </div>
+    </div>
+
+    <!-- ⑧ CTA -->
+    <div class="wf-cta-section">
+      <div class="wf-note" style="max-width:600px; margin:0 auto 20px;">
+        ⑧ 신청하기 버튼: 모집 상태·로그인 여부·중복 신청에 따라 상태 변경<br>
+        → 비로그인: 로그인 안내 | 신청 완료자: "신청 내역 확인" | 마감: 비활성
+      </div>
+      <button class="wf-btn wf-btn-primary wf-btn-lg" style="max-width:500px; margin:0 auto;" onclick="showPage('apply')">
+        신청하기
+      </button>
+    </div>
+
+    <footer class="wf-footer">
+      CBMC 교육연수본부 | 문의: edu@cbmc.or.kr | 02-XXX-XXXX
+    </footer>
+  </div>
+
+  <!-- ============================================================
+       PAGE: APPLY (EDU-APPLY-01)
+       ============================================================ -->
+  <div class="wf-page" id="page-apply">
+    <div class="wf-page-header">
+      <h1>교육 신청</h1>
+      <span class="wf-page-id">EDU-APPLY-01</span>
+    </div>
+    <div class="wf-content" style="max-width:720px; margin:0 auto;">
+
+      <!-- Course Summary -->
+      <div class="wf-course-summary">
+        <h3>신청 과정</h3>
+        <div class="wf-course-summary-course">DeepChange Well (128기)</div>
+        <div class="wf-course-summary-meta">
+          <span>📅 2026.10.20 ~ 10.22</span>
+          <span>📍 서울 ○○센터</span>
+          <span>💰 무료</span>
+        </div>
+      </div>
+
+      <!-- Applicant Info -->
+      <div class="wf-section">
+        <h3 class="wf-section-subtitle">신청자 정보</h3>
+        <div class="wf-note">회원 정보에서 자동 입력됩니다. 연락처와 이메일은 수정 가능합니다.</div>
+        <div class="wf-grid wf-grid-2">
+          <div class="wf-form-group">
+            <label class="wf-label">이름 <span class="required">*</span></label>
+            <input type="text" class="wf-input wf-input-auto" value="홍길동" readonly>
+          </div>
+          <div class="wf-form-group">
+            <label class="wf-label">소속 <span class="required">*</span></label>
+            <input type="text" class="wf-input wf-input-auto" value="서울지회" readonly>
+          </div>
+          <div class="wf-form-group">
+            <label class="wf-label">연락처 <span class="required">*</span></label>
+            <input type="text" class="wf-input" value="010-1234-5678">
+          </div>
+          <div class="wf-form-group">
+            <label class="wf-label">이메일 <span class="required">*</span></label>
+            <input type="text" class="wf-input" value="hong@email.com">
+          </div>
+        </div>
+      </div>
+
+      <!-- Additional Info -->
+      <div class="wf-section">
+        <h3 class="wf-section-subtitle">추가 정보</h3>
+        <div class="wf-form-group">
+          <label class="wf-label">참여 동기</label>
+          <textarea class="wf-textarea" placeholder="이 과정에 참여하게 된 동기를 간단히 적어주세요."></textarea>
+        </div>
+        <div class="wf-form-group">
+          <label class="wf-label">식이 제한</label>
+          <div style="display:flex; gap:24px; margin-top:6px;">
+            <label class="wf-checkbox"><input type="radio" name="diet" checked> 없음</label>
+            <label class="wf-checkbox"><input type="radio" name="diet"> 있음</label>
+          </div>
+        </div>
+        <div class="wf-form-group">
+          <label class="wf-label">기타 요청사항</label>
+          <textarea class="wf-textarea" placeholder="알레르기, 이동 지원 등 특별히 필요한 사항이 있다면 적어주세요." style="min-height:80px;"></textarea>
+        </div>
+      </div>
+
+      <!-- Consent -->
+      <div class="wf-consent">
+        <label class="wf-checkbox">
+          <input type="checkbox" id="consentCheck">
+          <span>개인정보 수집·이용에 동의합니다 <span class="required">(필수)</span></span>
+        </label>
+        <p style="font-size:12px; color:var(--text-light); margin-top:8px; margin-left:28px;">
+          수집 항목: 이름, 연락처, 이메일, 소속 | 목적: 교육 운영 | 보관: 교육 종료 후 3년
+          <a href="#" style="color:var(--gold-dark);">[전문 보기]</a>
+        </p>
+      </div>
+
+      <!-- Buttons -->
+      <div class="wf-btn-row" style="margin-top:32px;">
+        <button class="wf-btn wf-btn-secondary" onclick="showPage('course-detail')">취소</button>
+        <button class="wf-btn wf-btn-primary" onclick="showPage('apply-done')" style="min-width:200px;">신청하기</button>
+      </div>
+
+      <div class="wf-note" style="margin-top:20px;">
+        필수 항목 미입력 또는 동의 미체크 시 신청 버튼 비활성.<br>
+        제출 중 모집 마감 발생 시 서버에서 차단 → "모집이 마감되었습니다" 안내.
+      </div>
+    </div>
+
+    <footer class="wf-footer" style="margin-top:40px;">
+      CBMC 교육연수본부 | 문의: edu@cbmc.or.kr | 02-XXX-XXXX
+    </footer>
+  </div>
+
+  <!-- ============================================================
+       PAGE: APPLY DONE (EDU-APPLY-DONE-01)
+       ============================================================ -->
+  <div class="wf-page" id="page-apply-done">
+    <div class="wf-content">
+      <div class="wf-success">
+        <div class="wf-success-icon">✅</div>
+        <h2>신청이 완료되었습니다!</h2>
+        <p class="wf-success-sub">확인 이메일이 hong@email.com으로 발송되었습니다.</p>
+
+        <div class="wf-course-summary" style="max-width:500px; margin:0 auto 32px; text-align:left;">
+          <h3>신청 내역</h3>
+          <div class="wf-course-summary-course">DeepChange Well (128기)</div>
+          <div class="wf-course-summary-meta" style="flex-direction:column; gap:4px;">
+            <span>📅 일정: 2026.10.20 ~ 10.22</span>
+            <span>📍 장소: 서울 ○○센터</span>
+            <span>📋 신청일시: 2026.09.14 15:30</span>
+            <span>✅ 상태: <strong style="color:var(--success);">접수 완료</strong></span>
+          </div>
+        </div>
+
+        <div class="wf-btn-row">
+          <button class="wf-btn wf-btn-primary" onclick="showPage('my-education')">내 신청 내역 보기</button>
+          <button class="wf-btn wf-btn-secondary" onclick="showPage('course-list')">다른 과정 둘러보기</button>
+          <button class="wf-btn wf-btn-outline" onclick="showPage('course-list')">🗺️ 로드맵으로</button>
+        </div>
+      </div>
+      <div class="wf-page-id" style="text-align:center; margin-top:20px;">EDU-APPLY-DONE-01</div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       PAGE: MY EDUCATION (EDU-MY-01)
+       ============================================================ -->
+  <div class="wf-page" id="page-my-education">
+    <div class="wf-page-header">
+      <div>
+        <h1>내 교육 및 이력</h1>
+        <p style="font-size:14px; color:var(--text-light); margin-top:4px;">나의 교육과정 신청 현황, 수강 이력, 로드맵 진행도를 확인합니다.</p>
+      </div>
+      <span class="wf-page-id">EDU-MY-01</span>
+    </div>
+    <div class="wf-content">
+
+      <!-- Member Profile Header Card -->
+      <div class="wf-profile-header-card">
+        <div style="display:flex; align-items:center; gap:20px;">
+          <div style="width:72px; height:72px; border-radius:50%; background:var(--gold); color:var(--teal); font-size:30px; font-weight:700; display:flex; align-items:center; justify-content:center; border:3px solid white; box-shadow:0 4px 12px rgba(0,0,0,0.15);">
+            홍
+          </div>
+          <div>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <h2 style="font-size:24px; font-weight:700; color:white; margin:0;">홍길동 대표</h2>
+              <span style="background:var(--gold); color:var(--teal); padding:3px 10px; border-radius:12px; font-size:11px; font-weight:700;">정회원</span>
+              <span style="background:rgba(255,255,255,0.2); color:white; padding:3px 10px; border-radius:12px; font-size:11px;">서울강남지회</span>
+            </div>
+            <p style="font-size:13px; color:rgba(255,255,255,0.85); margin-top:4px;">(주)킹덤이노베이션 | 가입일: 2024.03.15</p>
+            <div class="wf-profile-badge-row">
+              <span class="wf-profile-badge">🏆 Welcome Gate 수료</span>
+              <span class="wf-profile-badge">🏆 Timothy Trail 수료</span>
+              <span class="wf-profile-badge">🏆 첫걸음 수료</span>
+              <span class="wf-profile-badge" style="background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.3); color:white;">+ 5개 도전 가능</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align:right; border-left:1px solid rgba(255,255,255,0.15); padding-left:32px;">
+          <div style="font-size:12px; text-transform:uppercase; letter-spacing:1px; color:var(--gold-light);">Total Completion Rate</div>
+          <div style="font-size:36px; font-weight:800; color:white; line-height:1.2;">37.5%</div>
+          <div style="font-size:13px; color:rgba(255,255,255,0.8);">8개 필수 장소 중 <strong>3곳</strong> 정복</div>
+        </div>
+      </div>
+
+      <!-- Roadmap Progress Section -->
+      <div class="wf-summary" style="margin-bottom:28px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <div class="wf-summary-title" style="margin:0;">🗺️ Kingdom Map 교육 로드맵 달성 현황</div>
+          <a href="#" onclick="showPage('course-list')" class="wf-summary-link">인터랙티브 맵 보기 →</a>
+        </div>
+        <div class="wf-progress-bar" style="height:12px; background:var(--cream-dark); border-radius:6px; overflow:hidden; margin-bottom:14px;">
+          <div class="wf-progress-fill" style="width:37.5%; height:100%; background:linear-gradient(90deg, var(--teal), var(--gold));"></div>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:13px; color:var(--text-light);">
+          <span>🏁 정복한 장소: <strong style="color:var(--success);">3개 (Welcome Gate, Timothy Trail, 첫걸음)</strong></span>
+          <span>⏳ 진행/신청 중: <strong style="color:var(--info);">2개 (DeepChange Well, 비전스쿨)</strong></span>
+          <span>🔒 미수강: <strong>3개 (마스터스, 소명, 사역자)</strong></span>
+        </div>
+      </div>
+
+      <!-- Category Filter Tabs -->
+      <div class="wf-tabs" id="myEduTabs">
+        <button class="wf-tab active" onclick="filterMyEdu('all', this)">전체 내역 (5)</button>
+        <button class="wf-tab" onclick="filterMyEdu('applied', this)">신청 접수 (1)</button>
+        <button class="wf-tab" onclick="filterMyEdu('ongoing', this)">수강 진행 중 (1)</button>
+        <button class="wf-tab" onclick="filterMyEdu('completed', this)">수료 완료 (3)</button>
+      </div>
+
+      <!-- 1. DeepChange Well (Applied) -->
+      <div class="wf-enroll-card my-edu-item" data-status="applied" style="border-left: 4px solid var(--warning); margin-bottom:16px;">
+        <div class="wf-enroll-info">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+            <h4 style="font-size:17px; margin:0;">DeepChange Well (128기)</h4>
+            <span class="wf-badge wf-badge-warning">입금 및 심사 대기</span>
+            <span style="font-size:12px; color:var(--text-light); font-family:monospace;">신청번호: APP-20260914-082</span>
+          </div>
+          <div class="wf-enroll-meta" style="line-height:1.7;">
+            📅 <strong>교육 일정:</strong> 2026.10.20 (화) ~ 10.22 (목) / 📍 <strong>장소:</strong> 서울 CBMC 본부 세미나실<br>
+            💰 <strong>수강료:</strong> 250,000원 (신한은행 100-032-XXXXXX 한국CBMC / 입금확인중)<br>
+            🕒 <strong>신청 일시:</strong> 2026.09.14 15:30
+          </div>
+        </div>
+        <div class="wf-enroll-actions" style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;">
+          <button class="wf-btn wf-btn-outline wf-btn-sm" onclick="showPage('course-detail')">과정 안내</button>
+          <button class="wf-btn wf-btn-secondary wf-btn-sm" style="color:var(--danger); border-color:var(--danger);" onclick="alert('신청 취소 신청이 접수되었습니다. (운영팀 확인 후 처리)')">신청 취소</button>
+        </div>
+      </div>
+
+      <!-- 2. Vision School (Ongoing) -->
+      <div class="wf-enroll-card my-edu-item" data-status="ongoing" style="border-left: 4px solid var(--info); margin-bottom:16px;">
+        <div class="wf-enroll-info">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+            <h4 style="font-size:17px; margin:0;">비전스쿨 (129기)</h4>
+            <span class="wf-badge wf-badge-upcoming">수강 진행 중</span>
+            <span style="font-size:12px; color:var(--info); font-weight:600;">진도율 67% (2/3회차 출석 완료)</span>
+          </div>
+          <div class="wf-enroll-meta" style="line-height:1.7;">
+            📅 <strong>교육 일정:</strong> 2026.09.01 ~ 09.25 (매주 목요일 19:00) / 📍 <strong>장소:</strong> 대전 엑스포 컨벤션홀<br>
+            📋 <strong>수료 조건:</strong> 출석 80% 이상 + 실천계획서 제출 필수 (수료 예정일: 2026.09.25)
+          </div>
+        </div>
+        <div class="wf-enroll-actions" style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;">
+          <button class="wf-btn wf-btn-primary wf-btn-sm" onclick="showPage('course-detail')">강의실 안내</button>
+          <button class="wf-btn wf-btn-outline wf-btn-sm" onclick="alert('출석 현황: 1주차(O), 2주차(O), 3주차(예정)')">출석부 확인</button>
+        </div>
+      </div>
+
+      <!-- 3. Welcome Gate (Completed) -->
+      <div class="wf-enroll-card my-edu-item" data-status="completed" style="border-left: 4px solid var(--success); margin-bottom:16px; background:#FAFCFA;">
+        <div class="wf-enroll-info">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+            <h4 style="font-size:17px; margin:0;">Welcome Gate (45기)</h4>
+            <span class="wf-badge wf-badge-recruiting">✅ 수료 완료</span>
+          </div>
+          <div class="wf-enroll-meta" style="line-height:1.7;">
+            📅 <strong>이수 기간:</strong> 2026.06.15 ~ 06.16 (총 16시간) / 📍 <strong>장소:</strong> 서울 아카데미센터<br>
+            🎓 <strong>수료 일자:</strong> 2026.06.16 / <strong>평가:</strong> 출석 100% 이수 완료
+          </div>
+        </div>
+        <div class="wf-enroll-actions" style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;">
+          <button class="wf-btn wf-btn-outline wf-btn-sm" onclick="showPage('course-detail')">과정 복습</button>
+        </div>
+      </div>
+
+      <!-- 4. Timothy Trail (Completed) -->
+      <div class="wf-enroll-card my-edu-item" data-status="completed" style="border-left: 4px solid var(--success); margin-bottom:16px; background:#FAFCFA;">
+        <div class="wf-enroll-info">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+            <h4 style="font-size:17px; margin:0;">Timothy Trail (12기)</h4>
+            <span class="wf-badge wf-badge-recruiting">✅ 수료 완료</span>
+          </div>
+          <div class="wf-enroll-meta" style="line-height:1.7;">
+            📅 <strong>이수 기간:</strong> 2026.04.10 ~ 04.12 (총 24시간) / 📍 <strong>장소:</strong> 곤지암 연수원<br>
+            🎓 <strong>수료 일자:</strong> 2026.04.12 / <strong>평가:</strong> 차세대 리더십 프로젝트 통과
+          </div>
+        </div>
+        <div class="wf-enroll-actions" style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;">
+          <button class="wf-btn wf-btn-outline wf-btn-sm" onclick="showPage('course-detail')">과정 복습</button>
+        </div>
+      </div>
+
+      <!-- 5. First Step (Completed) -->
+      <div class="wf-enroll-card my-edu-item" data-status="completed" style="border-left: 4px solid var(--success); margin-bottom:16px; background:#FAFCFA;">
+        <div class="wf-enroll-info">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+            <h4 style="font-size:17px; margin:0;">첫걸음 (신입회원 오리엔테이션 20기)</h4>
+            <span class="wf-badge wf-badge-recruiting">✅ 수료 완료</span>
+          </div>
+          <div class="wf-enroll-meta" style="line-height:1.7;">
+            📅 <strong>이수 기간:</strong> 2026.03.01 ~ 03.02 (총 8시간) / 📍 <strong>장소:</strong> 서울 CBMC 본부<br>
+            🎓 <strong>수료 일자:</strong> 2026.03.02 / <strong>평가:</strong> 기본 이수
+          </div>
+        </div>
+        <div class="wf-enroll-actions" style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;">
+          <button class="wf-btn wf-btn-outline wf-btn-sm" onclick="showPage('course-detail')">과정 복습</button>
+        </div>
+      </div>
+
+      <div class="wf-note" style="margin-top:24px;">
+        💡 <strong>1차 범위:</strong> 수강 이력에는 수료 일자·이수 결과까지 표시합니다. 온라인 수료증 발급(EDU-MY-02)은 2차 확장 범위로, 1차 화면에 버튼을 두지 않습니다.
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       PAGE: NOTICE LIST (EDU-NOT-01)
+       ============================================================ -->
+  <div class="wf-page" id="page-notice-list">
+    <div class="wf-page-header">
+      <div>
+        <h1>공지사항 및 교육 안내</h1>
+        <p style="font-size:14px; color:var(--text-light); margin-top:4px;">CBMC 교육연수본부의 최신 모집 공고와 운영 일정을 전해드립니다.</p>
+      </div>
+      <span class="wf-page-id">EDU-NOT-01</span>
+    </div>
+    <div class="wf-content">
+
+      <!-- Search and Filter Bar -->
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; gap:16px; flex-wrap:wrap;">
+        <div class="wf-chips" style="margin:0;">
+          <button class="wf-chip active">📋 전체</button>
+          <button class="wf-chip">📢 모집 공고</button>
+          <button class="wf-chip">🗓 교육 일정</button>
+          <button class="wf-chip">📄 규정 및 서식</button>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <input type="text" class="wf-input" placeholder="공지 제목 검색..." style="width:260px; padding:8px 14px; font-size:13px;">
+          <button class="wf-btn wf-btn-secondary wf-btn-sm">검색</button>
+        </div>
+      </div>
+
+      <!-- Notice Table -->
+      <table class="wf-notice-table">
+        <thead>
+          <tr>
+            <th style="width:70px;">번호</th>
+            <th style="width:110px;">분류</th>
+            <th>제목</th>
+            <th style="width:120px;">작성자</th>
+            <th style="width:110px;">등록일</th>
+            <th style="width:80px;">조회수</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Pinned 1 -->
+          <tr class="wf-pinned-row" onclick="showNoticeDetail('notice-1')">
+            <td style="text-align:center;"><span class="wf-pin-tag">📌 필독</span></td>
+            <td style="text-align:center;"><span class="wf-badge wf-badge-warning">통합안내</span></td>
+            <td>
+              <strong style="color:var(--teal);">[필독] 2026년 하반기 CBMC 교육 로드맵 일정 및 수강신청 통합 안내</strong>
+              <span style="font-size:11px; color:var(--gold-dark); margin-left:6px;">[첨부파일]</span>
+            </td>
+            <td style="text-align:center;">교육연수본부</td>
+            <td style="text-align:center; font-size:13px; color:var(--text-light);">2026.09.10</td>
+            <td style="text-align:center; font-size:13px; color:var(--text-light);">1,280</td>
+          </tr>
+          <!-- Pinned 2 -->
+          <tr class="wf-pinned-row" onclick="showNoticeDetail('notice-1')">
+            <td style="text-align:center;"><span class="wf-pin-tag">📌 중요</span></td>
+            <td style="text-align:center;"><span class="wf-badge wf-badge-recruiting">모집공고</span></td>
+            <td>
+              <strong style="color:var(--teal);">제128기 DeepChange Well 교육과정 접수 개시 (선착순 30명)</strong>
+            </td>
+            <td style="text-align:center;">교육연수본부</td>
+            <td style="text-align:center; font-size:13px; color:var(--text-light);">2026.09.01</td>
+            <td style="text-align:center; font-size:13px; color:var(--text-light);">945</td>
+          </tr>
+          <!-- Normal 1 -->
+          <tr onclick="showNoticeDetail('notice-1')">
+            <td style="text-align:center; color:var(--text-light);">3</td>
+            <td style="text-align:center;"><span class="wf-badge wf-badge-upcoming">교육안내</span></td>
+            <td>제129기 비전스쿨 2회차 온라인 과제 제출 마감 안내 (9/18까지)</td>
+            <td style="text-align:center;">비전스쿨운영팀</td>
+            <td style="text-align:center; font-size:13px; color:var(--text-light);">2026.09.05</td>
+            <td style="text-align:center; font-size:13px; color:var(--text-light);">412</td>
+          </tr>
+          <!-- Normal 2 -->
+          <tr onclick="showNoticeDetail('notice-1')">
+            <td style="text-align:center; color:var(--text-light);">2</td>
+            <td style="text-align:center;"><span class="wf-badge wf-badge-completed">규정안내</span></td>
+            <td>2026년도 교육 참가 신청서 및 개인정보 수집·이용 동의서 서식 개정 안내</td>
+            <td style="text-align:center;">중앙사무국</td>
+            <td style="text-align:center; font-size:13px; color:var(--text-light);">2026.08.28</td>
+            <td style="text-align:center; font-size:13px; color:var(--text-light);">680</td>
+          </tr>
+          <!-- Normal 3 -->
+          <tr onclick="showNoticeDetail('notice-1')">
+            <td style="text-align:center; color:var(--text-light);">1</td>
+            <td style="text-align:center;"><span class="wf-badge wf-badge-recruiting">모집예고</span></td>
+            <td>차세대 리더를 위한 Timothy Trail 13기 하계 특별과정 개설 예고</td>
+            <td style="text-align:center;">교육연수본부</td>
+            <td style="text-align:center; font-size:13px; color:var(--text-light);">2026.08.15</td>
+            <td style="text-align:center; font-size:13px; color:var(--text-light);">520</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Pagination -->
+      <div style="display:flex; justify-content:center; align-items:center; gap:6px; margin-top:28px;">
+        <button class="wf-btn wf-btn-secondary wf-btn-sm" style="padding:4px 10px;">&laquo;</button>
+        <button class="wf-btn wf-btn-primary wf-btn-sm" style="padding:4px 12px; min-width:32px;">1</button>
+        <button class="wf-btn wf-btn-secondary wf-btn-sm" style="padding:4px 12px; min-width:32px;">2</button>
+        <button class="wf-btn wf-btn-secondary wf-btn-sm" style="padding:4px 10px;">&raquo;</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       PAGE: NOTICE DETAIL (EDU-NOT-02)
+       ============================================================ -->
+  <div class="wf-page" id="page-notice-detail">
+    <div class="wf-page-header">
+      <div class="wf-breadcrumb" style="padding:0 0 12px;">
+        <a href="#" onclick="showPage('notice-list')">공지사항</a> &gt; <span>상세보기</span>
+      </div>
+      <span class="wf-page-id">EDU-NOT-02</span>
+    </div>
+    <div class="wf-content">
+      <div class="wf-notice-detail-card">
+        <div class="wf-notice-detail-header">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+            <span class="wf-pin-tag">📌 필독</span>
+            <span class="wf-badge wf-badge-warning">통합안내</span>
+          </div>
+          <h2 class="wf-notice-detail-title">[필독] 2026년 하반기 CBMC 교육 로드맵 일정 및 수강신청 통합 안내</h2>
+          <div class="wf-notice-detail-meta">
+            <span><strong>작성자:</strong> 사단법인 한국CBMC 교육연수본부</span>
+            <span><strong>등록일:</strong> 2026.09.10 10:00</span>
+            <span><strong>조회수:</strong> 1,280회</span>
+          </div>
+        </div>
+
+        <div style="line-height:2.0; font-size:15px; color:var(--text);">
+          <p>샬롬! 전국 7,500여 CBMC 회원 여러분의 일터와 기업 가운데 하나님의 은혜가 넘치기를 기원합니다.</p>
+          <br>
+          <p>2026년 하반기 CBMC 교육연수본부에서는 킹덤 비즈니스의 일터사역자 양성을 위해 <strong>8대 핵심 교육과정</strong>을 새롭게 정비하여 개설합니다.</p>
+          <br>
+          <h4 style="font-size:17px; color:var(--teal); margin-bottom:10px;">■ 2026 하반기 중점 개설 과정</h4>
+          <ul style="margin-left:20px; line-height:1.9;">
+            <li><strong>Welcome Gate (성문 입문):</strong> 신입 및 기존회원 기초 다지기 (10월 중 개설)</li>
+            <li><strong>DeepChange Well (변화의 샘):</strong> 일터 영성 및 비즈니스 변혁 (10.20 ~ 10.22, 모집중)</li>
+            <li><strong>Vision School (비전 전망대):</strong> 소명 재확인 및 비즈니스 플랜 구축 (진행중)</li>
+            <li><strong>Timothy Trail (훈련의 길):</strong> 차세대 경영인 및 차기 리더 양성 (11월 예정)</li>
+          </ul>
+          <br>
+          <h4 style="font-size:17px; color:var(--teal); margin-bottom:10px;">■ 신청 방법 및 유의사항</h4>
+          <p>1. 본 Edu-Kingdom 플랫폼에서 온라인으로 직접 수강 신청서를 작성합니다.</p>
+          <p>2. 소속 지회 총무 및 회장의 추천을 거쳐 최종 선발 안내 문자가 발송됩니다.</p>
+          <p>3. 각 과정별 정원이 한정되어 있으니 조기 마감에 유의하시기 바랍니다.</p>
+        </div>
+
+        <!-- Attachment Box -->
+        <div class="wf-notice-attach-box">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <span style="font-size:24px;">📎</span>
+            <div>
+              <div style="font-weight:600; font-size:14px;">2026년도_하반기_CBMC_교육과정_통합안내서.pdf</div>
+              <div style="font-size:12px; color:var(--text-light);">파일용량: 2.8 MB | 다운로드 횟수: 342회</div>
+            </div>
+          </div>
+          <button class="wf-btn wf-btn-outline wf-btn-sm" onclick="alert('가이드 문서(PDF) 다운로드가 시작되었습니다.')">📥 다운로드</button>
+        </div>
+
+        <!-- Navigation & Buttons -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:32px; padding-top:20px; border-top:1px solid var(--border);">
+          <button class="wf-btn wf-btn-secondary" onclick="showPage('notice-list')">← 목록으로</button>
+          <button class="wf-btn wf-btn-primary" onclick="showPage('course-list')">교육과정 신청 바로가기 →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       PAGE: LOGIN (EDU-LOGIN-01)
+       ============================================================ -->
+  <div class="wf-page" id="page-login">
+    <div class="wf-content">
+      <div class="wf-login-container">
+        <div class="wf-page-id" style="text-align:center; margin-bottom:20px;">EDU-LOGIN-01</div>
+        <div class="wf-login-box">
+          <div class="wf-login-title">🛡 Edu-Kingdom 로그인</div>
+
+          <div class="wf-dd" style="display:block; text-align:center; margin-bottom:20px;">[DD-03] 로그인 방식 결정 필요</div>
+
+          <div class="wf-form-group">
+            <label class="wf-label">아이디</label>
+            <input type="text" class="wf-input" placeholder="CBMC 회원 아이디">
+          </div>
+          <div class="wf-form-group">
+            <label class="wf-label">비밀번호</label>
+            <input type="password" class="wf-input" placeholder="비밀번호">
+          </div>
+          <button class="wf-btn wf-btn-primary wf-btn-lg" onclick="showPage('course-list')">로그인</button>
+
+          <div class="wf-divider">또는</div>
+
+          <button class="wf-social-btn wf-social-kakao">💬 카카오로 로그인</button>
+          <button class="wf-social-btn wf-social-naver">🟢 네이버로 로그인</button>
+
+          <p style="text-align:center; margin-top:24px; font-size:13px; color:var(--text-light);">
+            아직 회원이 아니신가요? <a href="#" style="color:var(--gold-dark); font-weight:600;">CBMC 회원 가입 안내</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       PAGE: ADMIN - DASHBOARD (EDU-ADMIN-DASH-01)
+       ============================================================ -->
+  <div class="wf-page" id="page-admin-dashboard">
+    <div class="wf-page-header">
+      <div>
+        <h1>📊 운영 대시보드</h1>
+        <p style="font-size:14px; color:var(--text-light); margin-top:4px;"><span class="wf-area-num">1</span> 기준: 2026.09.14 10:00 · 현재 운영 현황 요약 (기간별 리포트는 2차)</p>
+      </div>
+      <span class="wf-page-id">EDU-ADMIN-DASH-01</span>
+    </div>
+    <div class="wf-content">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; gap:12px; flex-wrap:wrap;">
+        <div class="wf-note" style="margin:0;">관리자 화면 — 교육 담당자는 담당 과정만, 관리자·본부 책임자는 전체 과정을 집계합니다.</div>
+        <button class="wf-btn wf-btn-secondary wf-btn-sm">⟳ 새로고침</button>
+      </div>
+
+      <!-- ② Summary cards -->
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;"><span class="wf-area-num">2</span><strong>요약</strong></div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(170px, 1fr)); gap:16px; margin-bottom:32px;">
+        <div class="wf-card" style="cursor:pointer;" onclick="showPage('admin-course')">
+          <div class="wf-card-body">
+            <div style="font-size:13px; color:var(--text-light);">모집 중 과정</div>
+            <div style="font-size:28px; font-weight:700; color:var(--teal); margin-top:6px;">3<span style="font-size:14px; font-weight:500;"> 개</span></div>
+          </div>
+        </div>
+        <div class="wf-card" style="cursor:pointer;" onclick="showPage('admin-applicants')">
+          <div class="wf-card-body">
+            <div style="font-size:13px; color:var(--text-light);">이번 달 신청 (취소 제외)</div>
+            <div style="font-size:28px; font-weight:700; color:var(--teal); margin-top:6px;">47<span style="font-size:14px; font-weight:500;"> 명</span></div>
+          </div>
+        </div>
+        <div class="wf-card" style="cursor:pointer; border-color:var(--warning);" onclick="showPage('admin-completion')">
+          <div class="wf-card-body">
+            <div style="font-size:13px; color:var(--text-light);">수료 처리 대기</div>
+            <div style="font-size:28px; font-weight:700; color:var(--warning); margin-top:6px;">1<span style="font-size:14px; font-weight:500;"> 개 과정</span></div>
+          </div>
+        </div>
+        <div class="wf-card" style="cursor:pointer;" onclick="showPage('admin-notice')">
+          <div class="wf-card-body">
+            <div style="font-size:13px; color:var(--text-light);">게시 중 공지</div>
+            <div style="font-size:28px; font-weight:700; color:var(--teal); margin-top:6px;">12<span style="font-size:14px; font-weight:500;"> 건</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ③ Course status table -->
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <div style="display:flex; align-items:center; gap:8px;"><span class="wf-area-num">3</span><strong>과정별 운영 현황</strong></div>
+        <a href="#" onclick="showPage('admin-course')" style="font-size:13px; color:var(--teal-light);">과정 관리 →</a>
+      </div>
+      <div style="overflow-x:auto; margin-bottom:32px;">
+      <table class="wf-table" style="min-width:680px; white-space:nowrap;">
+        <thead>
+          <tr>
+            <th>과정명</th>
+            <th>기수</th>
+            <th>상태</th>
+            <th>신청/정원</th>
+            <th>신청 마감</th>
+            <th>수료율</th>
+            <th>바로가기</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Welcome Gate</strong></td>
+            <td>45기</td>
+            <td><span class="wf-badge wf-badge-recruiting">모집 중</span></td>
+            <td>18 / 30</td>
+            <td>09.30</td>
+            <td>—</td>
+            <td><button class="wf-btn wf-btn-secondary wf-btn-sm" onclick="showPage('admin-applicants')">신청자</button></td>
+          </tr>
+          <tr>
+            <td><strong>비전스쿨</strong></td>
+            <td>129기</td>
+            <td><span class="wf-badge wf-badge-warning">교육 진행 중</span></td>
+            <td>40 / 40</td>
+            <td>마감</td>
+            <td>—</td>
+            <td><button class="wf-btn wf-btn-secondary wf-btn-sm" onclick="showPage('admin-completion')">출석</button></td>
+          </tr>
+          <tr>
+            <td><strong>Timothy Trail</strong></td>
+            <td>12기</td>
+            <td><span class="wf-badge wf-badge-completed">교육 종료</span></td>
+            <td>22 / 25</td>
+            <td>마감</td>
+            <td><strong>91%</strong></td>
+            <td><button class="wf-btn wf-btn-primary wf-btn-sm" onclick="showPage('admin-completion')">수료 처리</button></td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:20px;">
+        <!-- ④ Tasks -->
+        <div class="wf-card">
+          <div class="wf-card-header" style="display:flex; align-items:center; gap:8px;"><span class="wf-area-num">4</span><strong>처리 필요 업무</strong></div>
+          <div class="wf-card-body">
+            <ul class="wf-requirements">
+              <li>⚠️ 신청 마감 D-3 — Welcome Gate 45기</li>
+              <li>⚠️ 수료 미처리 — Timothy Trail 12기 (22명)</li>
+              <li>⚠️ 안내 메일 발송 실패 2건 (재시도 후 실패)</li>
+            </ul>
+          </div>
+        </div>
+        <!-- ⑤ Recent notices -->
+        <div class="wf-card">
+          <div class="wf-card-header" style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+            <div style="display:flex; align-items:center; gap:8px;"><span class="wf-area-num">5</span><strong>최근 공지</strong></div>
+            <button class="wf-btn wf-btn-primary wf-btn-sm" onclick="showPage('admin-notice')">+ 공지 작성</button>
+          </div>
+          <div class="wf-card-body">
+            <ul class="wf-requirements">
+              <li>📌 [필독] 2026년 하반기 교육 통합 안내 · 09.10</li>
+              <li>제128기 DeepChange Well 접수 개시 · 09.01</li>
+              <li>제129기 비전스쿨 2회차 과제 제출 안내 · 09.05</li>
+            </ul>
+            <a href="#" onclick="showPage('admin-notice')" style="font-size:13px; color:var(--teal-light);">전체 보기 →</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="wf-note" style="margin-top:24px;">
+        예외 상태: 집계 실패 영역만 "불러오지 못했습니다 [다시 시도]" 표시 · 운영 중 과정 없음 시 [과정 등록] 안내 · 참여자 계정 접근 시 권한 없음 안내.<br>
+        본부 책임자 계정: 전체 과정 집계 조회 전용 — 바로가기·[+ 공지 작성] 버튼 미노출.
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       PAGE: ADMIN - COURSE MANAGEMENT
+       ============================================================ -->
+  <div class="wf-page" id="page-admin-course">
+    <div class="wf-page-header">
+      <h1>⚙️ 과정 관리</h1>
+      <span class="wf-page-id">EDU-ADMIN-COURSE-01</span>
+    </div>
+    <div class="wf-content">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+        <div class="wf-note" style="margin:0;">관리자 화면 — 교육 담당자 전용. 접근 권한 필요.</div>
+        <button class="wf-btn wf-btn-primary">+ 과정 등록</button>
+      </div>
+
+      <table class="wf-table">
+        <thead>
+          <tr>
+            <th>번호</th>
+            <th>과정명</th>
+            <th>기수</th>
+            <th>상태</th>
+            <th>정원</th>
+            <th>신청자</th>
+            <th>신청률</th>
+            <th>작업</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td><strong>Welcome Gate</strong></td>
+            <td>45기</td>
+            <td><span class="wf-badge wf-badge-recruiting">모집 중</span></td>
+            <td>30</td>
+            <td>18</td>
+            <td>
+              <div style="width:80px; height:6px; background:#eee; border-radius:3px;">
+                <div style="width:60%; height:100%; background:var(--gold); border-radius:3px;"></div>
+              </div>
+            </td>
+            <td>
+              <button class="wf-btn wf-btn-outline wf-btn-sm">편집</button>
+              <button class="wf-btn wf-btn-secondary wf-btn-sm" onclick="showPage('admin-applicants')">보기</button>
+            </td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><strong>DeepChange Well</strong></td>
+            <td>128기</td>
+            <td><span class="wf-badge wf-badge-upcoming">모집 예정</span></td>
+            <td>25</td>
+            <td>0</td>
+            <td>
+              <div style="width:80px; height:6px; background:#eee; border-radius:3px;">
+                <div style="width:0%; height:100%; background:var(--gold); border-radius:3px;"></div>
+              </div>
+            </td>
+            <td>
+              <button class="wf-btn wf-btn-outline wf-btn-sm">편집</button>
+              <button class="wf-btn wf-btn-secondary wf-btn-sm">보기</button>
+            </td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td><strong>비전스쿨</strong></td>
+            <td>129기</td>
+            <td><span class="wf-badge wf-badge-closed">마감</span></td>
+            <td>40</td>
+            <td>40</td>
+            <td>
+              <div style="width:80px; height:6px; background:#eee; border-radius:3px;">
+                <div style="width:100%; height:100%; background:var(--danger); border-radius:3px;"></div>
+              </div>
+            </td>
+            <td>
+              <button class="wf-btn wf-btn-outline wf-btn-sm">편집</button>
+              <button class="wf-btn wf-btn-secondary wf-btn-sm" onclick="showPage('admin-applicants')">보기</button>
+            </td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td><strong>리더십스쿨</strong></td>
+            <td>15기</td>
+            <td><span class="wf-badge wf-badge-recruiting">모집 중</span></td>
+            <td>20</td>
+            <td>12</td>
+            <td>
+              <div style="width:80px; height:6px; background:#eee; border-radius:3px;">
+                <div style="width:60%; height:100%; background:var(--gold); border-radius:3px;"></div>
+              </div>
+            </td>
+            <td>
+              <button class="wf-btn wf-btn-outline wf-btn-sm">편집</button>
+              <button class="wf-btn wf-btn-secondary wf-btn-sm">보기</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       PAGE: ADMIN - APPLICANTS
+       ============================================================ -->
+  <div class="wf-page" id="page-admin-applicants">
+    <div class="wf-page-header">
+      <h1>👥 신청자 관리</h1>
+      <span class="wf-page-id">EDU-ADMIN-APPLY-01</span>
+    </div>
+    <div class="wf-content">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <div>
+          <h2 style="font-size:20px; color:var(--teal);">Welcome Gate (45기)</h2>
+          <p style="font-size:14px; color:var(--text-light);">신청자 <strong>18</strong>명 / 정원 30명</p>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="wf-btn wf-btn-outline wf-btn-sm">📧 일괄 안내 발송</button>
+          <button class="wf-btn wf-btn-primary wf-btn-sm">📥 CSV 다운로드</button>
+        </div>
+      </div>
+
+      <div class="wf-status-filter" style="margin-top:16px;">
+        <span class="active">전체 (18)</span>
+        <span>접수 완료 (16)</span>
+        <span>취소 (2)</span>
+      </div>
+
+      <table class="wf-table">
+        <thead>
+          <tr>
+            <th>번호</th>
+            <th>이름</th>
+            <th>소속</th>
+            <th>연락처</th>
+            <th>이메일</th>
+            <th>신청일</th>
+            <th>상태</th>
+            <th>작업</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td><strong>홍길동</strong></td>
+            <td>서울지회</td>
+            <td>010-1234-5678</td>
+            <td>hong@email.com</td>
+            <td>2026.09.14</td>
+            <td><span class="wf-badge wf-badge-recruiting">접수</span></td>
+            <td><button class="wf-btn wf-btn-secondary wf-btn-sm">상세</button></td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><strong>김철수</strong></td>
+            <td>부산지회</td>
+            <td>010-2345-6789</td>
+            <td>kim@email.com</td>
+            <td>2026.09.13</td>
+            <td><span class="wf-badge wf-badge-recruiting">접수</span></td>
+            <td><button class="wf-btn wf-btn-secondary wf-btn-sm">상세</button></td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td><strong>이영희</strong></td>
+            <td>대전지회</td>
+            <td>010-3456-7890</td>
+            <td>lee@email.com</td>
+            <td>2026.09.12</td>
+            <td><span class="wf-badge wf-badge-closed">취소</span></td>
+            <td><button class="wf-btn wf-btn-secondary wf-btn-sm">상세</button></td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td><strong>박민수</strong></td>
+            <td>광주지회</td>
+            <td>010-4567-8901</td>
+            <td>park@email.com</td>
+            <td>2026.09.11</td>
+            <td><span class="wf-badge wf-badge-recruiting">접수</span></td>
+            <td><button class="wf-btn wf-btn-secondary wf-btn-sm">상세</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       PAGE: ADMIN - COMPLETION
+       ============================================================ -->
+  <div class="wf-page" id="page-admin-completion">
+    <div class="wf-page-header">
+      <h1>🎓 수료 처리</h1>
+      <span class="wf-page-id">EDU-ADMIN-COMPLETE-01</span>
+    </div>
+    <div class="wf-content">
+      <div style="margin-bottom:24px;">
+        <h2 style="font-size:20px; color:var(--teal);">DeepChange Well (128기)</h2>
+        <p style="font-size:14px; color:var(--text-light);">교육 기간: 2026.10.20~22 (3일)</p>
+      </div>
+
+      <div class="wf-dd" style="margin-bottom:16px;">[DD-05] 수료 판정 기준 확정 필요 — 출석률 기준 또는 담당자 수동 판정</div>
+
+      <table class="wf-table">
+        <thead>
+          <tr>
+            <th>번호</th>
+            <th>이름</th>
+            <th>소속</th>
+            <th>D1 (10/20)</th>
+            <th>D2 (10/21)</th>
+            <th>D3 (10/22)</th>
+            <th>출석률</th>
+            <th>수료</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td><strong>홍길동</strong></td>
+            <td>서울지회</td>
+            <td><input type="checkbox" checked style="accent-color:var(--gold); width:18px; height:18px;"></td>
+            <td><input type="checkbox" checked style="accent-color:var(--gold); width:18px; height:18px;"></td>
+            <td><input type="checkbox" checked style="accent-color:var(--gold); width:18px; height:18px;"></td>
+            <td><strong style="color:var(--success);">100%</strong></td>
+            <td><button class="wf-btn wf-btn-primary wf-btn-sm">수료</button></td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><strong>김철수</strong></td>
+            <td>부산지회</td>
+            <td><input type="checkbox" checked style="accent-color:var(--gold); width:18px; height:18px;"></td>
+            <td><input type="checkbox" style="width:18px; height:18px;"></td>
+            <td><input type="checkbox" checked style="accent-color:var(--gold); width:18px; height:18px;"></td>
+            <td><strong style="color:var(--warning);">67%</strong></td>
+            <td><button class="wf-btn wf-btn-disabled wf-btn-sm">미수료</button></td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td><strong>박민수</strong></td>
+            <td>광주지회</td>
+            <td><input type="checkbox" checked style="accent-color:var(--gold); width:18px; height:18px;"></td>
+            <td><input type="checkbox" checked style="accent-color:var(--gold); width:18px; height:18px;"></td>
+            <td><input type="checkbox" checked style="accent-color:var(--gold); width:18px; height:18px;"></td>
+            <td><strong style="color:var(--success);">100%</strong></td>
+            <td><button class="wf-btn wf-btn-primary wf-btn-sm">수료</button></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="display:flex; gap:12px; margin-top:24px; justify-content:flex-end;">
+        <button class="wf-btn wf-btn-outline">일괄 수료 처리</button>
+        <button class="wf-btn wf-btn-primary">저장</button>
+      </div>
+
+      <div class="wf-note" style="margin-top:16px;">
+        수료 이력 변경 시: 변경 사유 입력 필수 + 별도 권한 확인.<br>
+        수료 처리 후 참여자의 "내 교육 이력"과 Kingdom Map 진행도에 반영.
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ============================================================
+       PAGE: ADMIN - NOTICE MANAGEMENT (EDU-ADMIN-NOTICE-01)
+       ============================================================ -->
+  <div class="wf-page" id="page-admin-notice">
+    <div class="wf-page-header">
+      <h1>📢 공지 관리</h1>
+      <span class="wf-page-id">EDU-ADMIN-NOTICE-01</span>
+    </div>
+    <div class="wf-content">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; gap:12px; flex-wrap:wrap;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span class="wf-area-num">1</span>
+          <div class="wf-status-filter">
+            <span class="active">전체</span>
+            <span>게시</span>
+            <span>임시저장</span>
+          </div>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <select class="wf-input" style="width:auto; padding:8px 12px; font-size:13px;">
+            <option>분류 전체</option><option>통합안내</option><option>모집공고</option><option>교육일정</option><option>규정·서식</option>
+          </select>
+          <input type="text" class="wf-input" placeholder="제목 검색..." style="width:200px; padding:8px 14px; font-size:13px;">
+          <button class="wf-btn wf-btn-primary wf-btn-sm">+ 공지 작성</button>
+        </div>
+      </div>
+
+      <!-- ② Notice list -->
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;"><span class="wf-area-num">2</span><strong>공지 목록</strong></div>
+      <div style="overflow-x:auto; margin-bottom:32px;">
+      <table class="wf-table" style="min-width:680px; white-space:nowrap;">
+        <thead>
+          <tr>
+            <th>고정</th>
+            <th>분류</th>
+            <th>제목</th>
+            <th>상태</th>
+            <th>작성자</th>
+            <th>등록일</th>
+            <th>작업</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>📌</td>
+            <td>통합안내</td>
+            <td><strong>[필독] 2026년 하반기 교육 통합 안내</strong></td>
+            <td><span class="wf-badge wf-badge-recruiting">게시</span></td>
+            <td>김담당</td>
+            <td>09.10</td>
+            <td>
+              <button class="wf-btn wf-btn-outline wf-btn-sm">수정</button>
+              <button class="wf-btn wf-btn-secondary wf-btn-sm" onclick="confirm('공지를 삭제하면 사용자 화면에서 사라집니다. 삭제할까요?')">삭제</button>
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>모집공고</td>
+            <td><strong>제128기 DeepChange Well 접수 개시</strong></td>
+            <td><span class="wf-badge wf-badge-recruiting">게시</span></td>
+            <td>이담당</td>
+            <td>09.01</td>
+            <td>
+              <button class="wf-btn wf-btn-outline wf-btn-sm">수정</button>
+              <button class="wf-btn wf-btn-secondary wf-btn-sm" onclick="confirm('공지를 삭제하면 사용자 화면에서 사라집니다. 삭제할까요?')">삭제</button>
+            </td>
+          </tr>
+          <tr>
+            <td></td>
+            <td>교육일정</td>
+            <td><strong>10월 교육 일정 변경 안내</strong></td>
+            <td><span class="wf-badge wf-badge-upcoming">임시저장</span></td>
+            <td>김담당</td>
+            <td>09.13</td>
+            <td>
+              <button class="wf-btn wf-btn-outline wf-btn-sm">수정</button>
+              <button class="wf-btn wf-btn-secondary wf-btn-sm" onclick="confirm('공지를 삭제하면 사용자 화면에서 사라집니다. 삭제할까요?')">삭제</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+
+      <!-- ③ Notice form -->
+      <div class="wf-card">
+        <div class="wf-card-header" style="display:flex; align-items:center; gap:8px;"><span class="wf-area-num">3</span><strong>공지 등록 / 수정</strong></div>
+        <div class="wf-card-body">
+          <div class="wf-form-group">
+            <label class="wf-label">분류 *</label>
+            <select class="wf-input"><option>모집공고</option><option>통합안내</option><option>교육일정</option><option>규정·서식</option></select>
+          </div>
+          <div class="wf-form-group">
+            <label class="wf-label">제목 * <span style="font-weight:400; color:var(--text-light);">(최대 100자)</span></label>
+            <input type="text" class="wf-input" placeholder="공지 제목을 입력하세요">
+          </div>
+          <div class="wf-form-group">
+            <label class="wf-label">본문 *</label>
+            <textarea class="wf-textarea" placeholder="[서식 도구: 굵게 · 링크 · 목록 · 이미지(대체 텍스트 필수)]"></textarea>
+          </div>
+          <div class="wf-form-group">
+            <label class="wf-label">첨부파일 <span style="font-weight:400; color:var(--text-light);">(최대 5개, 파일당 10MB · PDF·HWP·DOCX·XLSX·JPG·PNG)</span></label>
+            <button class="wf-btn wf-btn-secondary wf-btn-sm">파일 선택</button>
+          </div>
+          <div class="wf-form-group">
+            <label class="wf-label">관련 과정</label>
+            <select class="wf-input"><option>선택 안 함</option><option>DeepChange Well (128기)</option><option>Welcome Gate (45기)</option></select>
+          </div>
+          <div class="wf-form-group">
+            <label class="wf-checkbox"><input type="checkbox"> 필독으로 목록 최상단에 고정 (최대 3건)</label>
+          </div>
+          <div style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-top:20px;">
+            <button class="wf-btn wf-btn-outline" onclick="showPage('notice-detail')">미리보기</button>
+            <div style="display:flex; gap:12px;">
+              <button class="wf-btn wf-btn-secondary">임시저장</button>
+              <button class="wf-btn wf-btn-primary">게시하기</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="wf-note" style="margin-top:16px;">
+        필수값 누락 시 필드별 오류 + 저장 차단 · 저장 실패 시 입력 내용 유지 후 재시도 · 삭제는 비공개 처리 후 삭제자·일시 기록.<br>
+        작성자와 관계없이 모든 교육 담당자가 수정·삭제 가능 (작성자 유지, 최종 수정자·일시 기록) · 통합안내 포함 본부 승인 없이 즉시 게시.
+      </div>
+    </div>
+  </div>
+
+</div><!-- end .wf-shell -->
+
+<script>
+function showPage(pageId) {
+  // Hide all pages
+  document.querySelectorAll('.wf-page').forEach(p => p.classList.remove('active'));
+  // Show target
+  const target = document.getElementById('page-' + pageId);
+  if (target) target.classList.add('active');
+  // Update sidebar active state
+  document.querySelectorAll('.wf-sidebar-item').forEach(item => {
+    item.classList.remove('active');
+    if (item.getAttribute('onclick') && item.getAttribute('onclick').includes(pageId)) {
+      item.classList.add('active');
+    }
+  });
+  // Update topbar nav active state
+  document.querySelectorAll('.wf-topbar-nav a').forEach(a => {
+    a.classList.remove('active');
+    if (a.getAttribute('onclick') && a.getAttribute('onclick').includes(pageId)) {
+      a.classList.add('active');
+    }
+  });
+  // Scroll to top
+  window.scrollTo(0, 0);
+  // Close sidebar on mobile
+  closeSidebar();
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('open');
+}
+
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('open');
+}
+
+// Notice Board Navigation
+function showNoticeDetail(noticeId) {
+  showPage('notice-detail');
+}
+
+// My Education Tab Filter
+function filterMyEdu(status, el) {
+  // Update tab button styles
+  const parent = el.parentElement;
+  parent.querySelectorAll('.wf-tab').forEach(btn => btn.classList.remove('active'));
+  el.classList.add('active');
+
+  // Filter cards
+  const items = document.querySelectorAll('.my-edu-item');
+  items.forEach(card => {
+    if (status === 'all' || card.getAttribute('data-status') === status) {
+      card.style.display = 'flex';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
+
+// Chip toggle
+document.querySelectorAll('.wf-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.wf-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+  });
+});
+
+// Tab toggle (generic)
+document.querySelectorAll('.wf-tabs:not(#myEduTabs) .wf-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    tab.parentElement.querySelectorAll('.wf-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+  });
+});
+
+// Status filter toggle
+document.querySelectorAll('.wf-status-filter span').forEach(span => {
+  span.addEventListener('click', () => {
+    span.parentElement.querySelectorAll('span').forEach(s => s.classList.remove('active'));
+    span.classList.add('active');
+  });
+});
+</script>
+
+</body>
+</html>

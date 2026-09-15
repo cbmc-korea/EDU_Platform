@@ -1,0 +1,22 @@
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OMC state
+.omc/
+
+# Node (if added later)
+node_modules/
+dist/
+.env
+.env.local
+
+# Logs
+*.log
